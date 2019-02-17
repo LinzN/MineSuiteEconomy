@@ -1,0 +1,24 @@
+name: MineSuiteEconomy
+version: ${project.version}
+description: EconomyPlugin
+authors: [Kekshaus]
+main: de.linzn.mineSuite.economy.EconomyPlugin
+load: POSTWORLD
+depend: [MineSuiteCore, Vault]
+api-version: 1.13
+commands:
+  money:
+    description: Money command
+
+permissions:
+    mineSuite.economy.team:
+        description: Alle User Permissions
+        children:
+            mineSuite.economy.user: true
+    mineSuite.chat.user:
+        description: Alle User Permissions
+        children:
+            mineSuite.economy.pm: true
+    mineSuite.chat.afk:
+        description: afk
+        default: op
