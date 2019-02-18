@@ -13,6 +13,7 @@ package de.linzn.mineSuite.economy.utils;
 
 
 import de.linzn.mineSuite.economy.EconomyPlugin;
+import de.linzn.mineSuite.economy.api.EconomyManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -38,121 +39,160 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public int fractionalDigits() {
-        return 0;
+        return 2;
     }
 
     @Override
     public String format(double v) {
-        return null;
+        return EconomyManager.formatValue(v);
     }
 
     @Override
     public String currencyNamePlural() {
-        return null;
+        return EconomyManager.getSetting("currency.name.plural");
     }
 
     @Override
     public String currencyNameSingular() {
-        return null;
+        return EconomyManager.getSetting("currency.name.singular");
     }
 
     @Override
     public boolean hasAccount(String s) {
-        return false;
+        return EconomyManager.hasProfile(s);
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
-        return false;
+        return EconomyManager.hasProfile(offlinePlayer.getUniqueId());
     }
 
     @Override
     public boolean hasAccount(String s, String s1) {
-        return false;
+        /* no multiworld support */
+        return EconomyManager.hasProfile(s);
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
+        /* no multiworld support */
+        return EconomyManager.hasProfile(offlinePlayer.getUniqueId());
     }
 
     @Override
     public double getBalance(String s) {
-        return 0;
+        return EconomyManager.getBalance(s);
     }
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        return 0;
+        return EconomyManager.getBalance(offlinePlayer.getUniqueId());
     }
 
     @Override
     public double getBalance(String s, String s1) {
-        return 0;
+        /* no multiworld support */
+        return EconomyManager.getBalance(s);
     }
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer, String s) {
-        return 0;
+        /* no multiworld support */
+        return EconomyManager.getBalance(offlinePlayer.getUniqueId());
     }
 
     @Override
     public boolean has(String s, double v) {
-        return false;
+        return getBalance(s) >= v;
     }
 
     @Override
     public boolean has(OfflinePlayer offlinePlayer, double v) {
-        return false;
+        return getBalance(offlinePlayer) >= v;
     }
 
     @Override
     public boolean has(String s, String s1, double v) {
-        return false;
+        /* no multiworld support */
+        return getBalance(s) >= v;
     }
 
     @Override
     public boolean has(OfflinePlayer offlinePlayer, String s, double v) {
-        return false;
+        /* no multiworld support */
+        return getBalance(offlinePlayer) >= v;
+    }
+
+    @Override
+    public boolean createPlayerAccount(String s) {
+        return EconomyManager.createProfile(s);
+    }
+
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
+        return EconomyManager.createProfile(offlinePlayer.getUniqueId());
+    }
+
+    @Override
+    public boolean createPlayerAccount(String s, String s1) {
+        /* no multiworld support */
+        return EconomyManager.createProfile(s);
+    }
+
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
+        /* no multiworld support */
+        return EconomyManager.createProfile(offlinePlayer.getUniqueId());
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String s, double v) {
-        return null;
+        return EconomyManager.withdrawProfile(s, v);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String s, String s1, double v) {
-        return null;
+        /* no multiworld support */
+        return EconomyManager.withdrawProfile(s, v);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
+        /* no multiworld support */
+        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v);
     }
 
     @Override
     public EconomyResponse depositPlayer(String s, double v) {
-        return null;
+        return EconomyManager.depositeProfile(s, v);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v);
     }
 
     @Override
     public EconomyResponse depositPlayer(String s, String s1, double v) {
-        return null;
+        /* no multiworld support */
+        return EconomyManager.depositeProfile(s, v);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
+        /* no multiworld support */
+        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v);
+    }
+
+
+    /* Bank stuff */
+    @Override
+    public List<String> getBanks() {
         return null;
     }
 
@@ -209,30 +249,5 @@ public class MineEconomyHandler implements Economy {
     @Override
     public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
         return null;
-    }
-
-    @Override
-    public List<String> getBanks() {
-        return null;
-    }
-
-    @Override
-    public boolean createPlayerAccount(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(String s, String s1) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
     }
 }

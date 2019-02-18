@@ -11,10 +11,83 @@
 
 package de.linzn.mineSuite.economy.api;
 
+import de.linzn.mineSuite.core.database.BukkitQuery;
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import java.util.HashMap;
+import java.util.UUID;
 
 public class EconomyManager {
     private static HashMap<String, String> settings = new HashMap<>();
+
+
+    public static boolean createProfile(String playerName) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return false;
+        }
+        return createProfile(playerUUID);
+    }
+
+    public static boolean createProfile(UUID playerUUID) {
+        double defaultValue = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
+        return false;
+    }
+
+    public static boolean hasProfile(String playerName) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return false;
+        }
+        return hasProfile(playerUUID);
+    }
+
+    public static boolean hasProfile(UUID playerUUID) {
+        return false;
+    }
+
+    public static double getBalance(String playerName) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return 0.0D;
+        }
+        return getBalance(playerUUID);
+    }
+
+    public static double getBalance(UUID playerUUID) {
+        return 0.0;
+    }
+
+    public static EconomyResponse withdrawProfile(String playerName, double value) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
+        }
+        return withdrawProfile(playerUUID, value);
+    }
+
+    public static EconomyResponse withdrawProfile(UUID playerUUID, double value) {
+        return null;
+    }
+
+    public static EconomyResponse depositeProfile(String playerName, double value) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
+        }
+        return depositeProfile(playerUUID, value);
+    }
+
+    public static EconomyResponse depositeProfile(UUID playerUUID, double value) {
+        return null;
+    }
+
+    public static String formatValue(double value) {
+        if (value > 0.99D && value < 1.01) {
+            return "" + value + EconomyManager.getSetting("currency.name.singular");
+        }
+        return "" + value + EconomyManager.getSetting("currency.name.plural");
+    }
 
 
     public static String getSetting(String setting) {
@@ -24,5 +97,4 @@ public class EconomyManager {
     public static void addSetting(String setting, String value) {
         settings.put(setting, value);
     }
-
 }
