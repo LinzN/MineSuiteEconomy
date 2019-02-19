@@ -25,14 +25,14 @@ public class EconomyQuery {
 
     public static double getProfileBalance(UUID entityUUID, EconomyType economyType) {
         MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
-        double value = 0.0D;
+        double value = -1.0;
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
             PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '"+ economyType.name()+ "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
-                value = result.getDouble("value");
+                value = result.getDouble("balance");
             }
             result.close();
             sql.close();
