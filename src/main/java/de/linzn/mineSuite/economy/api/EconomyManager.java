@@ -45,7 +45,7 @@ public class EconomyManager {
     }
 
     public static boolean hasProfile(UUID playerUUID, EconomyType economyType) {
-        return EconomyQuery.hasProfile(playerUUID);
+        return EconomyQuery.hasProfile(playerUUID, economyType);
     }
 
     public static double getBalance(String playerName) {
@@ -57,7 +57,7 @@ public class EconomyManager {
     }
 
     public static double getBalance(UUID playerUUID, EconomyType economyType) {
-        return EconomyQuery.getProfileBalance(playerUUID);
+        return EconomyQuery.getProfileBalance(playerUUID, economyType);
     }
 
     public static EconomyResponse withdrawProfile(String playerName, double value) {
