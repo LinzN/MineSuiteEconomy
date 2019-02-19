@@ -14,6 +14,7 @@ package de.linzn.mineSuite.economy.utils;
 
 import de.linzn.mineSuite.economy.EconomyPlugin;
 import de.linzn.mineSuite.economy.api.EconomyManager;
+import de.linzn.minesuite.economy.utils.EconomyType
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -64,7 +65,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
-        return EconomyManager.hasProfile(offlinePlayer.getUniqueId());
+        return EconomyManager.hasProfile(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
         /* no multiworld support */
-        return EconomyManager.hasProfile(offlinePlayer.getUniqueId());
+        return EconomyManager.hasProfile(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        return EconomyManager.getBalance(offlinePlayer.getUniqueId());
+        return EconomyManager.getBalance(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public double getBalance(OfflinePlayer offlinePlayer, String s) {
         /* no multiworld support */
-        return EconomyManager.getBalance(offlinePlayer.getUniqueId());
+        return EconomyManager.getBalance(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -130,7 +131,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-        return EconomyManager.createProfile(offlinePlayer.getUniqueId());
+        return EconomyManager.createProfile(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
         /* no multiworld support */
-        return EconomyManager.createProfile(offlinePlayer.getUniqueId());
+        return EconomyManager.createProfile(offlinePlayer.getUniqueId(), EconomyType.PLAYER);
     }
 
     @Override
@@ -152,7 +153,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v);
+        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
     @Override
@@ -164,7 +165,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
         /* no multiworld support */
-        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v);
+        return EconomyManager.withdrawProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
     @Override
@@ -174,7 +175,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v);
+        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
         /* no multiworld support */
-        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v);
+        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
 

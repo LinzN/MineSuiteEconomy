@@ -1,7 +1,19 @@
+/*
+ * Copyright (C) 2018. MineGaming - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the LGPLv3 license, which unfortunately won't be
+ * written for another century.
+ *
+ *  You should have received a copy of the LGPLv3 license with
+ *  this file. If not, please write to: niklas.linz@enigmar.de
+ *
+ */
+ 
 package de.linzn.mineSuite.economy.mysql;
 
 import de.linzn.mineSuite.core.database.mysql.MySQLConnectionManager;
 import de.linzn.mineSuite.economy.api.EconomyManager;
+import de.linzn.mineSuite.economy.utils.EconomyType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,16 +23,16 @@ import java.util.UUID;
 
 public class EconomyQuery {
 
-    public static UUID getEconomyProfile(String player) {
+    public static double getProfileBalance(UUID entityUUID, EconomyType economyType) {
         MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
-        UUID uuid = null;
+        double value = 0.0D;
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
-            PreparedStatement sql = conn.prepareStatement("SELECT UUID FROM core_uuidcache WHERE NAME = '" + player + "';");
+            PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
-                uuid = UUID.fromString(result.getString(1));
+                value = result.getDouble("value");
             }
             result.close();
             sql.close();
@@ -29,7 +41,28 @@ public class EconomyQuery {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return uuid;
+        return value;
+    }
+
+        public static boolean hasProfile(UUID entityUUID, EconomyType economyType) {
+        MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
+        boolean hasProfile = false;
+
+        try {
+            Connection conn = manager.getConnection("mineSuiteEconomy");
+            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "';");
+            ResultSet result = sql.executeQuery();
+            if (result.next()) {
+                hasProfile = true;
+            }
+            result.close();
+            sql.close();
+            manager.release("mineSuiteEconomy", conn);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hasProfile;
     }
 
 

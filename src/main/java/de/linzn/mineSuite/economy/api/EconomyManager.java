@@ -12,6 +12,7 @@
 package de.linzn.mineSuite.economy.api;
 
 import de.linzn.mineSuite.core.database.BukkitQuery;
+import de.linzn.mineSuite.economy.utils.EconomyType;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
@@ -26,10 +27,10 @@ public class EconomyManager {
         if (playerUUID == null) {
             return false;
         }
-        return createProfile(playerUUID);
+        return createProfile(playerUUID, EconomyType.PLAYER);
     }
 
-    public static boolean createProfile(UUID playerUUID) {
+    public static boolean createProfile(UUID playerUUID, EconomyType economyType) {
         double defaultValue = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
         return false;
     }
@@ -39,11 +40,11 @@ public class EconomyManager {
         if (playerUUID == null) {
             return false;
         }
-        return hasProfile(playerUUID);
+        return hasProfile(playerUUID, EconomyType.PLAYER);
     }
 
-    public static boolean hasProfile(UUID playerUUID) {
-        return false;
+    public static boolean hasProfile(UUID playerUUID, EconomyType economyType) {
+        return EconomyQuery.hasProfile(playerUUID);
     }
 
     public static double getBalance(String playerName) {
@@ -51,11 +52,11 @@ public class EconomyManager {
         if (playerUUID == null) {
             return 0.0D;
         }
-        return getBalance(playerUUID);
+        return getBalance(playerUUID, EconomyType.PLAYER);
     }
 
-    public static double getBalance(UUID playerUUID) {
-        return 0.0;
+    public static double getBalance(UUID playerUUID, EconomyType economyType) {
+        return EconomyQuery.getProfileBalance(playerUUID);
     }
 
     public static EconomyResponse withdrawProfile(String playerName, double value) {
@@ -63,10 +64,10 @@ public class EconomyManager {
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
         }
-        return withdrawProfile(playerUUID, value);
+        return withdrawProfile(playerUUID, value, EconomyType.PLAYER);
     }
 
-    public static EconomyResponse withdrawProfile(UUID playerUUID, double value) {
+    public static EconomyResponse withdrawProfile(UUID playerUUID, double value, EconomyType economyType) {
         return null;
     }
 
@@ -75,10 +76,10 @@ public class EconomyManager {
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
         }
-        return depositeProfile(playerUUID, value);
+        return depositeProfile(playerUUID, value, EconomyType.PLAYER);
     }
 
-    public static EconomyResponse depositeProfile(UUID playerUUID, double value) {
+    public static EconomyResponse depositeProfile(UUID playerUUID, double value, EconomyType economyType) {
         return null;
     }
 
