@@ -29,7 +29,7 @@ public class EconomyQuery {
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
-            PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "';");
+            PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '"+ economyType.name()+ "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
                 value = result.getDouble("value");
@@ -50,7 +50,7 @@ public class EconomyQuery {
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
-            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "';");
+            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '"+ economyType.name()+ "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
                 hasProfile = true;
