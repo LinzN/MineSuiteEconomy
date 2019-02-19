@@ -14,7 +14,6 @@ package de.linzn.mineSuite.economy.utils;
 
 import de.linzn.mineSuite.economy.EconomyPlugin;
 import de.linzn.mineSuite.economy.api.EconomyManager;
-import de.linzn.minesuite.economy.utils.EconomyType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
