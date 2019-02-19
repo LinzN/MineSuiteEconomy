@@ -12,8 +12,8 @@
 package de.linzn.mineSuite.economy.api;
 
 import de.linzn.mineSuite.core.database.BukkitQuery;
-import de.linzn.mineSuite.economy.utils.EconomyType;
 import de.linzn.mineSuite.economy.mysql.EconomyQuery;
+import de.linzn.mineSuite.economy.utils.EconomyType;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
@@ -31,9 +31,21 @@ public class EconomyManager {
         return createProfile(playerUUID, EconomyType.PLAYER);
     }
 
-    public static boolean createProfile(UUID playerUUID, EconomyType economyType) {
+    public static boolean createProfile(UUID entityUUID, EconomyType economyType) {
         double defaultValue = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
-        return false;
+        return EconomyQuery.createProfile(entityUUID, economyType, defaultValue);
+    }
+
+    public static boolean deleteProfile(String playerName) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return false;
+        }
+        return deleteProfile(playerUUID, EconomyType.PLAYER);
+    }
+
+    public static boolean deleteProfile(UUID entityUUID, EconomyType economyType) {
+        return EconomyQuery.deleteProfile(entityUUID, economyType);
     }
 
     public static boolean hasProfile(String playerName) {
@@ -44,8 +56,8 @@ public class EconomyManager {
         return hasProfile(playerUUID, EconomyType.PLAYER);
     }
 
-    public static boolean hasProfile(UUID playerUUID, EconomyType economyType) {
-        return EconomyQuery.hasProfile(playerUUID, economyType);
+    public static boolean hasProfile(UUID entityUUID, EconomyType economyType) {
+        return EconomyQuery.hasProfile(entityUUID, economyType);
     }
 
     public static double getBalance(String playerName) {
@@ -56,8 +68,12 @@ public class EconomyManager {
         return getBalance(playerUUID, EconomyType.PLAYER);
     }
 
-    public static double getBalance(UUID playerUUID, EconomyType economyType) {
-        return EconomyQuery.getProfileBalance(playerUUID, economyType);
+    public static double getBalance(UUID entityUUID, EconomyType economyType) {
+        double balance = EconomyQuery.getProfileBalance(entityUUID, economyType);
+        if (balance == -1.0) {
+            balance = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
+        }
+        return balance;
     }
 
     public static EconomyResponse withdrawProfile(String playerName, double value) {
@@ -68,20 +84,62 @@ public class EconomyManager {
         return withdrawProfile(playerUUID, value, EconomyType.PLAYER);
     }
 
-    public static EconomyResponse withdrawProfile(UUID playerUUID, double value, EconomyType economyType) {
-        return null;
+    public static EconomyResponse withdrawProfile(UUID entityUUID, double value, EconomyType economyType) {
+        double currentBalance = getBalance(entityUUID, economyType);
+        if (currentBalance == -1.0) {
+            currentBalance = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
+        }
+        if (value < 0.01) {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.FAILURE, "Error on transaction EC 1 - negative value");
+        }
+        double withdrawBalance = currentBalance - Math.abs(value);
+        boolean success = EconomyQuery.updateProfile(entityUUID, withdrawBalance, economyType);
+        if (success) {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.SUCCESS, null);
+        } else {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.FAILURE, "Error on transaction EC 2 - database error");
+        }
     }
 
-    public static EconomyResponse depositeProfile(String playerName, double value) {
+    public static EconomyResponse depositProfile(String playerName, double value) {
         UUID playerUUID = BukkitQuery.getUUID(playerName);
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
         }
-        return depositeProfile(playerUUID, value, EconomyType.PLAYER);
+        return depositProfile(playerUUID, value, EconomyType.PLAYER);
     }
 
-    public static EconomyResponse depositeProfile(UUID playerUUID, double value, EconomyType economyType) {
-        return null;
+    public static EconomyResponse depositProfile(UUID entityUUID, double value, EconomyType economyType) {
+        double currentBalance = getBalance(entityUUID, economyType);
+        if (currentBalance == -1.0) {
+            currentBalance = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
+        }
+
+        if (value < 0.01) {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.FAILURE, "Error on transaction EC 1 - negative value");
+        }
+        double depositBalance = currentBalance + Math.abs(value);
+        boolean success = EconomyQuery.updateProfile(entityUUID, depositBalance, economyType);
+        if (success) {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.SUCCESS, null);
+        } else {
+            return new EconomyResponse(value, currentBalance, EconomyResponse.ResponseType.FAILURE, "Error on transaction EC 2 - database error");
+        }
+    }
+
+    public static boolean setProfileBalance(String playerName, double value) {
+        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        if (playerUUID == null) {
+            return false;
+        }
+        return setProfileBalance(playerUUID, value, EconomyType.PLAYER);
+    }
+
+    public static boolean setProfileBalance(UUID entityUUID, double value, EconomyType economyType) {
+        if (value < 0) {
+            return false;
+        }
+        return EconomyQuery.updateProfile(entityUUID, value, economyType);
     }
 
     public static String formatValue(double value) {

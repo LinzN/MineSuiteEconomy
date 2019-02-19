@@ -8,7 +8,7 @@
  *  this file. If not, please write to: niklas.linz@enigmar.de
  *
  */
- 
+
 package de.linzn.mineSuite.economy.mysql;
 
 import de.linzn.mineSuite.core.database.mysql.MySQLConnectionManager;
@@ -22,6 +22,72 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class EconomyQuery {
+    public static boolean createProfile(UUID entityUUID, EconomyType economyType, double defaultValue) {
+        MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
+        try {
+            Connection conn = manager.getConnection("mineSuiteEconomy");
+            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
+            ResultSet result = sql.executeQuery();
+            boolean hasAlready = result.next();
+            result.close();
+            sql.close();
+            if (!hasAlready) {
+                PreparedStatement insert = conn.prepareStatement(
+                        "INSERT INTO module_economy_profiles (uuid, type, balance) VALUES ('" + entityUUID.toString() + "', '" + economyType.name() + "', '" + defaultValue + "');");
+                insert.executeUpdate();
+                insert.close();
+                manager.release("mineSuiteEconomy", conn);
+            }
+            manager.release("mineSuiteEconomy", conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean deleteProfile(UUID entityUUID, EconomyType economyType) {
+        MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
+        try {
+            Connection conn = manager.getConnection("mineSuiteEconomy");
+            PreparedStatement update = conn.prepareStatement("DELETE FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
+            update.executeUpdate();
+            update.close();
+            manager.release("mineSuiteEconomy", conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateProfile(UUID entityUUID, double balance, EconomyType economyType) {
+        MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
+        try {
+            Connection conn = manager.getConnection("mineSuiteEconomy");
+            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
+            ResultSet result = sql.executeQuery();
+            boolean hasAlready = result.next();
+            result.close();
+            sql.close();
+            if (hasAlready) {
+                PreparedStatement update = conn.prepareStatement("UPDATE module_economy_profiles SET balance = '" + balance + "' WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
+                update.executeUpdate();
+                update.close();
+            } else {
+                PreparedStatement insert = conn.prepareStatement(
+                        "INSERT INTO module_economy_profiles (uuid, type, balance) VALUES ('" + entityUUID.toString() + "', '" + economyType.name() + "', '" + balance + "');");
+                insert.executeUpdate();
+                insert.close();
+            }
+            manager.release("mineSuiteEconomy", conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
     public static double getProfileBalance(UUID entityUUID, EconomyType economyType) {
         MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
@@ -29,7 +95,7 @@ public class EconomyQuery {
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
-            PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '"+ economyType.name()+ "';");
+            PreparedStatement sql = conn.prepareStatement("SELECT balance FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
                 value = result.getDouble("balance");
@@ -44,13 +110,13 @@ public class EconomyQuery {
         return value;
     }
 
-        public static boolean hasProfile(UUID entityUUID, EconomyType economyType) {
+    public static boolean hasProfile(UUID entityUUID, EconomyType economyType) {
         MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
         boolean hasProfile = false;
 
         try {
             Connection conn = manager.getConnection("mineSuiteEconomy");
-            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '"+ economyType.name()+ "';");
+            PreparedStatement sql = conn.prepareStatement("SELECT uuid FROM module_economy_profiles WHERE uuid = '" + entityUUID.toString() + "' AND type = '" + economyType.name() + "';");
             ResultSet result = sql.executeQuery();
             if (result.next()) {
                 hasProfile = true;
@@ -58,7 +124,7 @@ public class EconomyQuery {
             result.close();
             sql.close();
             manager.release("mineSuiteEconomy", conn);
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

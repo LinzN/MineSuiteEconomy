@@ -169,24 +169,24 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String s, double v) {
-        return EconomyManager.depositeProfile(s, v);
+        return EconomyManager.depositProfile(s, v);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
+        return EconomyManager.depositProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
     @Override
     public EconomyResponse depositPlayer(String s, String s1, double v) {
         /* no multiworld support */
-        return EconomyManager.depositeProfile(s, v);
+        return EconomyManager.depositProfile(s, v);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
         /* no multiworld support */
-        return EconomyManager.depositeProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
+        return EconomyManager.depositProfile(offlinePlayer.getUniqueId(), v, EconomyType.PLAYER);
     }
 
 

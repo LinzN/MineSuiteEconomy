@@ -28,10 +28,14 @@ public class EconomyPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        getServer().getServicesManager().register(Economy.class, new MineEconomyHandler(), this, ServicePriority.Highest);
+    }
+
+    @Override
     public void onEnable() {
         inst = this;
         if (EconomyQuery.loadSettings()) {
-            getServer().getServicesManager().register(Economy.class, new MineEconomyHandler(), this, ServicePriority.Highest);
             loadCommands();
         } else {
             this.getLogger().severe("Database Error");
@@ -47,7 +51,7 @@ public class EconomyPlugin extends JavaPlugin {
         Money moneyClass = new Money(this);
         if (!moneyClass.isLoaded())
             moneyClass.loadCmd();
-        getLogger().info("Register command /shop");
+        getLogger().info("Register command /money");
         getCommand("money").setExecutor(moneyClass);
 
     }

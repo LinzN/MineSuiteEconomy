@@ -44,7 +44,7 @@ public class Money implements CommandExecutor {
                 Player player = (Player) sender;
             }
             if (args.length == 0) {
-                getCmdMap().get("help").runCmd(cmd, sender, args);
+                getCmdMap().get("balance").runCmd(cmd, sender, args);
             } else if (getCmdMap().containsKey(args[0])) {
                 String command = args[0];
                 if (!getCmdMap().get(command).runCmd(cmd, sender, args)) {
@@ -64,7 +64,10 @@ public class Money implements CommandExecutor {
 
     public void loadCmd() {
         try {
-            this.cmdMap.put("help", new MoneyHelp(this.plugin, "mineSuiteEconomy.help"));
+            this.cmdMap.put("help", new MoneyHelp(this.plugin, "mineSuiteEconomy.user.help"));
+            this.cmdMap.put("balance", new MoneyBalance(this.plugin, "mineSuiteEconomy.user.balance"));
+
+            this.cmdMap.put("set", new MoneySet(this.plugin, "mineSuiteEconomy.admin.set"));
 
             this.isLoaded = true;
         } catch (Exception e) {
