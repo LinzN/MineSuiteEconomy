@@ -13,6 +13,7 @@ package de.linzn.mineSuite.economy.api;
 
 import de.linzn.mineSuite.core.database.BukkitQuery;
 import de.linzn.mineSuite.economy.utils.EconomyType;
+import de.linzn.mineSuite.economy.mysql.EconomyQuery;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
