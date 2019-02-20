@@ -85,6 +85,7 @@ public class EconomyManager {
     }
 
     public static EconomyResponse withdrawProfile(UUID entityUUID, double value, EconomyType economyType) {
+        value = round(value);
         double currentBalance = getBalance(entityUUID, economyType);
         if (currentBalance == -1.0) {
             currentBalance = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
