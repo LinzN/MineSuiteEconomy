@@ -1,10 +1,12 @@
 package de.linzn.mineSuite.economy.commands;
 
+import de.linzn.mineSuite.core.database.BukkitQuery;
 import de.linzn.mineSuite.core.utils.LanguageDB;
 import de.linzn.mineSuite.economy.EconomyPlugin;
 import de.linzn.mineSuite.economy.api.EconomyManager;
 import de.linzn.mineSuite.economy.utils.EconomyType;
 import de.linzn.openJL.pairs.Pair;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,8 +43,17 @@ public class MoneyTop implements ICommand {
             page = 1;
         }
         List<Pair<UUID, Double>> profilesMap = EconomyManager.getTopMap(EconomyType.PLAYER, page, 5);
+        int j = 1;
+        for (int i = 1; i < page; i++) {
+            j += 5;
+        }
+
+        sender.sendMessage(ChatColor.GREEN + "Money Top " + j + " - " + (j + 4) + " Seite " + page + "");
+
         for (Pair<UUID, Double> pair : profilesMap) {
-            sender.sendMessage("UUID: " + pair.getKey() + " Value: " + pair.getValue());
+            String playerName = BukkitQuery.getPlayerName(pair.getKey());
+            sender.sendMessage("" + ChatColor.GREEN + j + ". " + ChatColor.YELLOW + playerName + ChatColor.GREEN + " Balance: " + ChatColor.YELLOW + EconomyManager.formatValue(pair.getValue()));
+            j++;
         }
 
         return true;
