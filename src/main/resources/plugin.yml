@@ -13,6 +13,24 @@ commands:
 
 permissions:
     mineSuite.economy.team:
-        description: Alle User Permissions
+        description: Alle Team Permissions
         children:
             mineSuite.economy.user: true
+            mineSuite.economy.set: true
+    mineSuite.economy.user:
+        description: Alle User Permissions
+        children:
+            mineSuite.economy.help: true
+            mineSuite.economy.balance: true
+            mineSuite.economy.pay: true
+            mineSuite.economy.top: true
+    mineSuite.economy.help:
+        description: Permissions
+    mineSuite.economy.balance:
+        description: Permissions
+    mineSuite.economy.pay:
+        description: Permissions
+    mineSuite.economy.top:
+        description: Permissions
+    mineSuite.economy.set:
+        description: Permissions

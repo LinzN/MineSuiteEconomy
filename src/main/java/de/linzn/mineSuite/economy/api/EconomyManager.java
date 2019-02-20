@@ -110,6 +110,7 @@ public class EconomyManager {
     }
 
     public static EconomyResponse depositProfile(UUID entityUUID, double value, EconomyType economyType) {
+        value = round(value);
         double currentBalance = getBalance(entityUUID, economyType);
         if (currentBalance == -1.0) {
             currentBalance = Double.parseDouble(EconomyManager.getSetting("currency.defaultValue"));
@@ -136,18 +137,69 @@ public class EconomyManager {
     }
 
     public static boolean setProfileBalance(UUID entityUUID, double value, EconomyType economyType) {
+        value = round(value);
         if (value < 0) {
             return false;
         }
         return EconomyQuery.updateProfile(entityUUID, value, economyType);
     }
 
+    public static boolean transactionBetweenProfiles(String fromName, String toName, double value) {
+        if (fromName.equalsIgnoreCase(toName)) {
+            return false;
+        }
+        UUID fromUUID = BukkitQuery.getUUID(fromName);
+        if (fromUUID == null) {
+            return false;
+        }
+        UUID toUUID = BukkitQuery.getUUID(toName);
+        if (toUUID == null) {
+            return false;
+        }
+        return transactionBetweenProfiles(fromUUID, EconomyType.PLAYER, toUUID, EconomyType.PLAYER, value);
+    }
+
+    public static boolean transactionBetweenProfiles(UUID fromEntityUUID, EconomyType fromType, UUID toEntityUUID, EconomyType toType, double value) {
+        if (fromEntityUUID.equals(toEntityUUID)) {
+            return false;
+        }
+        value = round(value);
+
+        double fromBalance = getBalance(fromEntityUUID, fromType);
+        double toBalance = getBalance(toEntityUUID, toType);
+        if (value < 0.01) {
+            return false;
+        }
+        fromBalance -= value;
+        toBalance += value;
+
+        if (fromBalance < 0) {
+            return false;
+        }
+        if (toBalance < 0) {
+            return false;
+        }
+
+        EconomyQuery.updateProfile(fromEntityUUID, fromBalance, fromType);
+        EconomyQuery.updateProfile(toEntityUUID, toBalance, toType);
+        return true;
+    }
+
     public static String formatValue(double value) {
         if (value > 0.99D && value < 1.01) {
-            return "" + value + EconomyManager.getSetting("currency.name.singular");
+            return "" + round(value) + " " + EconomyManager.getSetting("currency.name.singular");
         }
-        return "" + value + EconomyManager.getSetting("currency.name.plural");
+        return "" + round(value) + " " + EconomyManager.getSetting("currency.name.plural");
     }
+
+    public static double round(double value) {
+        int places = 2;
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
 
 
     public static String getSetting(String setting) {
