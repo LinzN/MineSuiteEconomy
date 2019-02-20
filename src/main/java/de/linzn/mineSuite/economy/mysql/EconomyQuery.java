@@ -14,11 +14,14 @@ package de.linzn.mineSuite.economy.mysql;
 import de.linzn.mineSuite.core.database.mysql.MySQLConnectionManager;
 import de.linzn.mineSuite.economy.api.EconomyManager;
 import de.linzn.mineSuite.economy.utils.EconomyType;
+import de.linzn.openJL.pairs.Pair;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class EconomyQuery {
@@ -129,6 +132,28 @@ public class EconomyQuery {
             e.printStackTrace();
         }
         return hasProfile;
+    }
+
+    public static List<Pair<UUID, Double>> getProfiles(EconomyType economyType, int amountValue, int offsetValue) {
+        MySQLConnectionManager manager = MySQLConnectionManager.DEFAULT;
+        List<Pair<UUID, Double>> profiles = new ArrayList<>();
+        try {
+            Connection conn = manager.getConnection("mineSuiteEconomy");
+            PreparedStatement sql = conn.prepareStatement("SELECT balance, uuid FROM module_economy_profiles WHERE type = '" + economyType.name() + "' ORDER BY balance DESC LIMIT " + amountValue + " OFFSET " + offsetValue + ";");
+            ResultSet result = sql.executeQuery();
+            while (result.next()) {
+                UUID uuid = UUID.fromString(result.getString("uuid"));
+                double value = result.getDouble("balance");
+                profiles.add(new Pair<>(uuid, value));
+            }
+            result.close();
+            sql.close();
+            manager.release("mineSuiteEconomy", conn);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return profiles;
     }
 
 

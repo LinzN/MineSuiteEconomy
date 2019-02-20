@@ -14,14 +14,15 @@ package de.linzn.mineSuite.economy.api;
 import de.linzn.mineSuite.core.database.BukkitQuery;
 import de.linzn.mineSuite.economy.mysql.EconomyQuery;
 import de.linzn.mineSuite.economy.utils.EconomyType;
+import de.linzn.openJL.pairs.Pair;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class EconomyManager {
     private static HashMap<String, String> settings = new HashMap<>();
-
 
     public static boolean createProfile(String playerName) {
         UUID playerUUID = BukkitQuery.getUUID(playerName);
@@ -186,6 +187,14 @@ public class EconomyManager {
         return true;
     }
 
+    public static List<Pair<UUID, Double>> getTopMap(EconomyType type, int page, int limit) {
+        int offsetFull = 0;
+        for (int i = 1; i < page; i++) {
+            offsetFull += limit;
+        }
+        return EconomyQuery.getProfiles(type, limit, offsetFull);
+    }
+
     public static String formatValue(double value) {
         if (value > 0.99D && value < 1.01) {
             return "" + round(value) + " " + EconomyManager.getSetting("currency.name.singular");
@@ -193,15 +202,10 @@ public class EconomyManager {
         return "" + round(value) + " " + EconomyManager.getSetting("currency.name.plural");
     }
 
-    public static double round(double value) {
-        int places = 2;
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
+    public static void reloadSettings() {
+        settings.clear();
+        EconomyQuery.loadSettings();
     }
-
-
 
     public static String getSetting(String setting) {
         return settings.get(setting);
@@ -209,5 +213,13 @@ public class EconomyManager {
 
     public static void addSetting(String setting, String value) {
         settings.put(setting, value);
+    }
+
+    private static double round(double value) {
+        int places = 2;
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }
