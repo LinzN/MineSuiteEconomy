@@ -15,6 +15,7 @@ import de.linzn.mineSuite.core.database.CacheManager;
 import de.linzn.mineSuite.economy.mysql.EconomyQuery;
 import de.linzn.mineSuite.economy.utils.EconomyType;
 import de.linzn.openJL.pairs.Pair;
+import de.linzn.openJL.math.FloatingPoint;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
@@ -216,10 +217,6 @@ public class EconomyManager {
     }
 
     private static double round(double value) {
-        int places = 2;
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
+        return FloatingPoint.round(value, 2);
     }
 }
