@@ -11,7 +11,7 @@
 
 package de.linzn.mineSuite.economy.api;
 
-import de.linzn.mineSuite.core.database.BukkitQuery;
+import de.linzn.mineSuite.core.database.CacheManager;
 import de.linzn.mineSuite.economy.mysql.EconomyQuery;
 import de.linzn.mineSuite.economy.utils.EconomyType;
 import de.linzn.openJL.pairs.Pair;
@@ -25,7 +25,7 @@ public class EconomyManager {
     private static HashMap<String, String> settings = new HashMap<>();
 
     public static boolean createProfile(String playerName) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
         }
@@ -38,7 +38,7 @@ public class EconomyManager {
     }
 
     public static boolean deleteProfile(String playerName) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
         }
@@ -50,7 +50,7 @@ public class EconomyManager {
     }
 
     public static boolean hasProfile(String playerName) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
         }
@@ -62,7 +62,7 @@ public class EconomyManager {
     }
 
     public static double getBalance(String playerName) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return 0.0D;
         }
@@ -78,7 +78,7 @@ public class EconomyManager {
     }
 
     public static EconomyResponse withdrawProfile(String playerName, double value) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
         }
@@ -104,7 +104,7 @@ public class EconomyManager {
     }
 
     public static EconomyResponse depositProfile(String playerName, double value) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
         }
@@ -131,7 +131,7 @@ public class EconomyManager {
     }
 
     public static boolean setProfileBalance(String playerName, double value) {
-        UUID playerUUID = BukkitQuery.getUUID(playerName);
+        UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
         }
@@ -150,11 +150,11 @@ public class EconomyManager {
         if (fromName.equalsIgnoreCase(toName)) {
             return false;
         }
-        UUID fromUUID = BukkitQuery.getUUID(fromName);
+        UUID fromUUID = CacheManager.getPlayerUUID(fromName);
         if (fromUUID == null) {
             return false;
         }
-        UUID toUUID = BukkitQuery.getUUID(toName);
+        UUID toUUID = CacheManager.getPlayerUUID(toName);
         if (toUUID == null) {
             return false;
         }

@@ -1,6 +1,6 @@
 package de.linzn.mineSuite.economy.commands;
 
-import de.linzn.mineSuite.core.database.BukkitQuery;
+import de.linzn.mineSuite.core.database.CacheManager;
 import de.linzn.mineSuite.core.utils.LanguageDB;
 import de.linzn.mineSuite.economy.EconomyPlugin;
 import de.linzn.mineSuite.economy.api.EconomyManager;
@@ -51,7 +51,7 @@ public class MoneyTop implements ICommand {
         sender.sendMessage(ChatColor.GREEN + "Money Top " + j + " - " + (j + 4) + " Seite " + page + "");
 
         for (Pair<UUID, Double> pair : profilesMap) {
-            String playerName = BukkitQuery.getPlayerName(pair.getKey());
+            String playerName = CacheManager.getPlayerName(pair.getKey());
             sender.sendMessage("" + ChatColor.GREEN + j + ". " + ChatColor.YELLOW + playerName + ChatColor.GREEN + " Balance: " + ChatColor.YELLOW + EconomyManager.formatValue(pair.getValue()));
             j++;
         }
