@@ -14,8 +14,8 @@ package de.linzn.mineSuite.economy.api;
 import de.linzn.mineSuite.core.database.CacheManager;
 import de.linzn.mineSuite.economy.mysql.EconomyQuery;
 import de.linzn.mineSuite.economy.utils.EconomyType;
-import de.linzn.openJL.pairs.Pair;
 import de.linzn.openJL.math.FloatingPoint;
+import de.linzn.openJL.pairs.Pair;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.HashMap;
@@ -26,6 +26,12 @@ public class EconomyManager {
     private static HashMap<String, String> settings = new HashMap<>();
 
     public static boolean createProfile(String playerName) {
+
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return createProfile(guildUUID, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
@@ -39,6 +45,11 @@ public class EconomyManager {
     }
 
     public static boolean deleteProfile(String playerName) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return deleteProfile(guildUUID, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
@@ -51,6 +62,11 @@ public class EconomyManager {
     }
 
     public static boolean hasProfile(String playerName) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return hasProfile(guildUUID, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
@@ -63,6 +79,11 @@ public class EconomyManager {
     }
 
     public static double getBalance(String playerName) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return getBalance(guildUUID, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return 0.0D;
@@ -79,6 +100,11 @@ public class EconomyManager {
     }
 
     public static EconomyResponse withdrawProfile(String playerName, double value) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return withdrawProfile(guildUUID, value, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
@@ -105,6 +131,11 @@ public class EconomyManager {
     }
 
     public static EconomyResponse depositProfile(String playerName, double value) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return depositProfile(guildUUID, value, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return new EconomyResponse(value, 0.0, EconomyResponse.ResponseType.FAILURE, "PlayerUUID is null");
@@ -132,6 +163,11 @@ public class EconomyManager {
     }
 
     public static boolean setProfileBalance(String playerName, double value) {
+        if (isGuildAccount(playerName)) {
+            UUID guildUUID = getGuildUUID(playerName);
+            return setProfileBalance(guildUUID, value, EconomyType.GUILD);
+        }
+
         UUID playerUUID = CacheManager.getPlayerUUID(playerName);
         if (playerUUID == null) {
             return false;
@@ -151,15 +187,36 @@ public class EconomyManager {
         if (fromName.equalsIgnoreCase(toName)) {
             return false;
         }
-        UUID fromUUID = CacheManager.getPlayerUUID(fromName);
+
+        UUID fromUUID;
+        EconomyType fromType;
+        if (isGuildAccount(fromName)) {
+            fromUUID = getGuildUUID(fromName);
+            fromType = EconomyType.GUILD;
+        } else {
+            fromUUID = CacheManager.getPlayerUUID(fromName);
+            fromType = EconomyType.PLAYER;
+        }
+
         if (fromUUID == null) {
             return false;
         }
-        UUID toUUID = CacheManager.getPlayerUUID(toName);
+
+        UUID toUUID;
+        EconomyType toType;
+        if (isGuildAccount(toName)) {
+            toUUID = getGuildUUID(toName);
+            toType = EconomyType.GUILD;
+        } else {
+            toUUID = CacheManager.getPlayerUUID(toName);
+            toType = EconomyType.PLAYER;
+        }
+
         if (toUUID == null) {
             return false;
         }
-        return transactionBetweenProfiles(fromUUID, EconomyType.PLAYER, toUUID, EconomyType.PLAYER, value);
+
+        return transactionBetweenProfiles(fromUUID, fromType, toUUID, toType, value);
     }
 
     public static boolean transactionBetweenProfiles(UUID fromEntityUUID, EconomyType fromType, UUID toEntityUUID, EconomyType toType, double value) {
@@ -203,6 +260,14 @@ public class EconomyManager {
         return "" + round(value) + " " + EconomyManager.getSetting("currency.name.plural");
     }
 
+    public static boolean isGuildAccount(String name) {
+        return name.startsWith("guild_");
+    }
+
+    public static UUID getGuildUUID(String name) {
+        return UUID.fromString(name.split("guild_")[1]);
+    }
+
     public static void reloadSettings() {
         settings.clear();
         EconomyQuery.loadSettings();
@@ -215,6 +280,7 @@ public class EconomyManager {
     public static void addSetting(String setting, String value) {
         settings.put(setting, value);
     }
+
 
     private static double round(double value) {
         return FloatingPoint.round(value, 2);
