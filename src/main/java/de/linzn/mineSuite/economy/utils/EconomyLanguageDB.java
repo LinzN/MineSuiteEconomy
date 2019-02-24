@@ -11,4 +11,6 @@ public class EconomyLanguageDB {
 
     public static String SHOW_BALANCE_SELF = ChatColor.GREEN + "Dein Kontostand: " + ChatColor.YELLOW + "{value}";
     public static String SHOW_BALANCE_OTHER = ChatColor.GREEN + "{player}`s Kontostand: " + ChatColor.YELLOW + "{value}";
+
+    public static String ERROR_NO_PROFILE = ChatColor.RED + "Dieses Profil gibt es nicht!";
 }

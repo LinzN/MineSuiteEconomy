@@ -40,7 +40,11 @@ public class MoneyBalance implements ICommand {
                 playerName = args[1];
             }
         }
-        double value = EconomyManager.getBalance(playerName);
+        double value = EconomyManager.getBalance(playerName, true);
+        if (value == -1.0) {
+            sender.sendMessage(EconomyLanguageDB.ERROR_NO_PROFILE);
+            return true;
+        }
         if (args.length <= 1) {
             sender.sendMessage(EconomyLanguageDB.SHOW_BALANCE_SELF.replace("{value}", EconomyManager.formatValue(value)));
         } else {

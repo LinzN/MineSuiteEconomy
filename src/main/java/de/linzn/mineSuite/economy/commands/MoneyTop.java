@@ -51,7 +51,7 @@ public class MoneyTop implements ICommand {
         sender.sendMessage(ChatColor.GREEN + "Money Top " + j + " - " + (j + 4) + " Seite " + page + "");
 
         for (Pair<UUID, Double> pair : profilesMap) {
-            String playerName = CacheManager.getPlayerName(pair.getKey());
+            String playerName = CacheManager.getPlayerName(pair.getKey(), false);
             sender.sendMessage("" + ChatColor.GREEN + j + ". " + ChatColor.YELLOW + playerName + ChatColor.GREEN + " Balance: " + ChatColor.YELLOW + EconomyManager.formatValue(pair.getValue()));
             j++;
         }

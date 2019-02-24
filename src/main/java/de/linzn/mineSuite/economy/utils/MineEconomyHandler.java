@@ -81,7 +81,7 @@ public class MineEconomyHandler implements Economy {
 
     @Override
     public double getBalance(String s) {
-        return EconomyManager.getBalance(s);
+        return EconomyManager.getBalance(s, false);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class MineEconomyHandler implements Economy {
     @Override
     public double getBalance(String s, String s1) {
         /* no multiworld support */
-        return EconomyManager.getBalance(s);
+        return EconomyManager.getBalance(s, false);
     }
 
     @Override

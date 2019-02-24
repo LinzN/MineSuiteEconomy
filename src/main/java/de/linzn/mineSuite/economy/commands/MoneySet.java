@@ -36,7 +36,7 @@ public class MoneySet implements ICommand {
         String playerName = args[1];
         double value = Double.parseDouble(args[2]);
 
-        if (EconomyManager.setProfileBalance(playerName, value)) {
+        if (EconomyManager.setProfileBalance(playerName, value, true)) {
             sender.sendMessage(EconomyLanguageDB.SUCCESS_SET_PROFILE.replace("{value}", EconomyManager.formatValue(value)).replace("{player}", playerName));
         } else {
             sender.sendMessage(EconomyLanguageDB.ERROR_SET_PROFILE.replace("{value}", EconomyManager.formatValue(value)).replace("{player}", playerName));
